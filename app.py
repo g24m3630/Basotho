@@ -21,6 +21,7 @@ def create_document(doc, collection):
     print(collection.insert_one(doc))
 
 def create_many_documents(doc, collection):
+    """Insert many documents into a collection."""
     print(collection.insert_many(doc)) 
     
 def read_all_documents():
@@ -35,8 +36,6 @@ def read_document_by_id(id,collection):
     """Fetch and print all documents with the provided id."""
     collection.find({ "_id":id})
 
-        
-    
 def read_documents_by_condition(field,value):
     """Fetch and print all documents with provided field and value."""
     print(collection.find({field:value}))
