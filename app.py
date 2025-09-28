@@ -110,7 +110,7 @@ def menu():
                 age = int(input("Enter age: "))
                 students.append({"name": name, "age": age})
             create_Many_documents(students, collection)
-#68d98e559a33206ced717614asdfghj
+
         elif choice == "3":
             read_all_documents()
             
