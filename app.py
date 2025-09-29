@@ -5,7 +5,7 @@ import pprint
 # -------------------------
 # Database connection
 # -------------------------
-client = MongoClient("mongodb+srv://group2:BASOTHO@basotho.g73eyoe.mongodb.net/?retryWrites=true&w=majority&appName=BASOTHO")  # adjust if using Atlas
+client = MongoClient("mongodb+srv://thabiso:BASOTHO@basotho.g73eyoe.mongodb.net/?retryWrites=true&w=majority&appName=BASOTHO")  # adjust if using Atlas
 db = client["university_db"]      # replace with your chosen DB name
 collection = db["students"]    # example collection
 
@@ -107,8 +107,28 @@ def menu():
             students=[]
             for i in range(num):
                 name = input("Enter student name: ")
-                age = int(input("Enter age: "))
-                students.append({"name": name, "age": age})
+                student_id = input("Enter student_id: ")
+                email = input("Enter your email: ")
+                phone = input("Enter your phone number: ")
+                contact_info = {"email":email, "phone":phone}
+
+                courses = []
+                course_num = int(input("Enter the number of courses you do: "))
+                for i in range(course_num):
+                    course_id =  ObjectId()
+                    course_code = input("Enter course_code: ")
+                    semester = input("Enter the semester: ")
+                    grade = input("Enter your grade: ")
+                    status = input("Enter the status(Complete OR Enrolled): ")
+                    courses.append({"course_id ": course_id, "course_code": course_code, "semester":semester, "grade":grade, "status":status})
+
+                num_advisors=int(input("Enter number of advisors: "))
+                advisors=[]
+                for n in range(num_advisors):
+                    advisor_id=input("Enter id of advisor: ")
+                    advisors.append(advisor_id)
+                students.append({"_id":ObjectId(), "name":name, "student_id":student_id,"contact_info":contact_info, "enrolled_courses": courses, "advisors":advisors})
+                
             create_Many_documents(students, collection)
 
         elif choice == "3":
