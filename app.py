@@ -79,6 +79,7 @@ def menu():
 
         choice = input("Enter choice: ")
 
+        #####THIS CONDITION CHECKS FOR CREATING ONE DOCUMENT###########
         if choice == "1":
             name = input("Enter student name: ")
             student_id = input("Enter student_id: ")
@@ -101,7 +102,12 @@ def menu():
                 advisors.append(advisor_id)
                 
             create_One_document({"_id":ObjectId(), "name":name, "student_id":student_id,"contact_info":contact_info, "enrolled_courses": courses, "advisors":advisors}, collection)
-
+            
+            
+            
+            
+          #####THIS CONDITION CHECKS FOR CREATING MANY DOCUMENTS###########
+ 
         elif choice == "2":
             num = int(input("Enter the number of students you would like to add: "))
             students=[]
@@ -130,44 +136,63 @@ def menu():
                 students.append({"_id":ObjectId(), "name":name, "student_id":student_id,"contact_info":contact_info, "enrolled_courses": courses, "advisors":advisors})
                 
             create_Many_documents(students, collection)
+            
+         #####THIS CONDITION CHECKS FOR READING ALL DOCUMENTS###########
 
         elif choice == "3":
             read_all_documents()
-            
+        
+        #####THIS CONDITION CHECKS FOR READING FIRST DOCUMENTS###########
+        
         elif choice == "4":
             read_one_document()
-
+            
+        #####THIS CONDITION CHECKS FOR READING A DOCUMENT BY _ID###########
         elif choice == "5":
             id = input("Enter object _id: ")
             read_document_by_id(ObjectId(id))
 
+
+        #####THIS CONDITION CHECKS FOR READING A DOCUMENT BY CONDITION###########
         elif choice == "6":
             field = input("Enter field: ")
             value = input("Enter value: ")
             read_document_by_condition(field, value)
+            
+            
+        #####THIS CONDITION UPDATES ONE DOCUMENT###########
 
         elif choice == "7":
             field = input("Enter field: ")
             oldValue = input("Enter value: ")
             newValue = input("Enter new value: ")
             updateOne({field : oldValue}, collection , {field : newValue})
-
+            
+        #####THIS CONDITION UPDATES MANY DOCUMENTS###########
+        
         elif choice == "8":
             field = input("Enter field: ")
             oldValue = input("Enter value: ")
             newValue = input("Enter new value: ")
             updateMany( { field : oldValue}, collection , {field : newValue})
 
+
+
+     #####THIS CONDITION IS FOR DELETING ONE DOCUMENT###########
         elif choice == "9":
             field = input("Enter field: ")
             value = input("Enter value: ")
             deleteOne({field : value} , collection)
-
+     
+     
+     #####THIS CONDITION IS FOR DELETING MANY DOCUMENTS###########
         elif choice == "10":
             field = input("Enter field: ")
             value = input("Enter value: ")
             deleteMany({field : value} , collection)
 
+
+    #####THIS CONDITION IS FOR EXITING###########
         elif choice == "11":
             print("Exiting...")
             quit()
