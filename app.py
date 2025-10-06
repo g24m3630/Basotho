@@ -127,6 +127,57 @@ def top10Students_per_course(courseCode):
 
 #__________________________________________________________________________________________________
 
+"""Logical, Comparison and Element nstrictions"""
+
+def notOperator(collection, condition, field):
+    """Compute the not operator"""
+    try:
+        db.collection.find({field: {"$not": condition}})
+    except Exception as e:
+        print(e)
+
+def andOperator(collection, condition1, condition2):
+    """Compute the and operator"""
+    try:
+        db.collection.find({"$and": {[condition1, condition2]}})
+    except Exception as e:
+        print(e)
+
+def orOperator(collection, condition1, condition2):
+    """Compute the or operator"""
+    try:
+        db.collection.find({"$or": {[condition1, condition2]}})
+    except Exception as e:
+        print(e)
+
+def greaterThanOperator(collection, field, value):
+    """Compute the greater than operator"""
+    try:
+        db.collection.find({field: {"$gt": value}})
+    except Exception as e:
+        print(e)
+
+def lessThanOperator(collection, field, value):
+    """Compute the less than operator"""
+    try:
+        db.collection.find({field: {"$lt": value}})
+    except Exception as e:
+        print(e)
+
+def inOperator(collection, field, array):
+    """Compute the in operator"""
+    try:
+        db.collection.find({field: {"$in": array}})
+    except Exception as e:
+        print(e)
+
+def existOperator(collection, field, bool):
+    """compute the exist operator"""
+    try:
+        db.collection.find({field: {"$exist": bool}})
+    except Exception as e:
+        print(e)
+
 
 # -------------------------
 # Menu System
@@ -300,9 +351,101 @@ def menu():
         elif choice == "14":
             name = input("Enter course_code(e.g. EOW379): ")
             top10Students_per_course(name)
+
+        elif choice == "11":
+            field = input("enter field: ")
+            value = input("enter value: ")
+            subOperator = input("enter sub operator between less(<) and greater(>) than: ")
+
+            if subOperator == "<":
+                condition = {"$lt": value}
+            else:
+                condition = {"$gt": value}
+
+            return notOperator(collection, condition, field)
+            
+
+        elif choice == "12":
+            
+            field1 = input("enter first field: ")
+            value1 = input("enter the first value: ")
+            operator1 = input("enter the operator of your choice (greater than(>), less than(<)): ")
+            if operator1 == ">":
+                condition1 = {field1: {"$gt": value1}}
+            elif operator1 == "<":
+                condition1 = {field1: {"$lt": value1}}
+            else:
+                condition1 = {field1: value1}
+
+            field2 = input("enter second field: ")
+            value2 = input("enter the value you want to change: ")
+            operator2 = input("enter the operator of your choice (greater than(>), less than(<)): ")
+            if operator2 == ">":
+                condition2 = {field2: {"$gt": value2}}
+            elif operator2 == "<":
+                condition2 = {field2: {"$lt": value2}}
+            else:
+                condition2 = {field2: value2}
+
+
+            return andOperator(collection, condition1, condition2)
+            
         
-    #####THIS CONDITION IS FOR EXITING###########
+        elif choice == "13":
+            field1 = input("enter first field: ")
+            value1 = input("enter the first value: ")
+            operator1 = input("enter the operator of your choice (greater than(>), less than(<)): ")
+            if operator1 == ">":
+                condition1 = {field1: {"$gt": value1}}
+            elif operator1 == "<":
+                condition1 = {field1: {"$lt": value1}}
+            else:
+                condition1 = {field1: value1}
+
+            field2 = input("enter second field: ")
+            value2 = input("enter the value you want to change: ")
+            operator2 = input("enter the operator of your choice (greater than(>), less than(<)): ")
+            if operator2 == ">":
+                condition2 = {field2: {"$gt": value2}}
+            elif operator2 == "<":
+                condition2 = {field2: {"$lt": value2}}
+            else:
+                condition2 = {field2: value2}
+
+            returnorOperator(collection, condition1, condition2)
+
+        elif choice == "14":
+            field = input("enter field: ")
+            value = input("enter value: ")
+
+            greaterThanOperator(collection, field, value)
+
         elif choice == "15":
+            field = input("enter field: ")
+            value = input("enter value: ")
+
+            lessThanOperator(collection, field, value)
+
+        elif choice == "16":
+            array = []
+            field = input("enter field: ")
+            numElements = int(input("enter number of elements to check in: "))
+            for _ in range(numElements):
+                element = input("enter each element: ")
+                array.append(element)
+            
+            result = inOperator(collection, field, array)
+            for results in result:
+                print(results)
+
+        elif choice == "17":
+            field = input("enter field: ")
+            bool = input("enter boolean value True or False: ")
+
+            existOperator(collection, field, bool)
+
+    #####THIS CONDITION IS FOR EXITING###########
+        elif choice == "18":
             print("Exiting...")
             quit()
 
