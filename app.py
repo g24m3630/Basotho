@@ -18,45 +18,111 @@ pp = pprint.PrettyPrinter(indent=2)
 
 def create_One_document(doc, collection):
     """Insert a single document into the collection."""
-    collection.insert_one(doc)
+    try:
+        cursor = db.collection.insert_one(doc)
+        print(cursor)
+    except Exception as e:
+        print(e)
 
 def create_Many_documents(doc, collection):
     """Insert a multiple document into the collection."""
-    collection.insert_many(doc)
-
+    cursor = db.collection.insert_many(doc)
+    try:
+       print(cursor)
+    except Exception as e:
+        print(e)
+        
 def read_all_documents(collection):
     """Fetch and print all documents."""
-    collection.find({})
-
+    
+    cursor = db.collection.find({})
+    try:
+        for docs in cursor:
+            print(docs)
+    except Exception as e:
+        print(e)
 
 def read_one_document(collection):
     """Fetch and print one documents."""
-    collection.find_one()
-
+    cursor=db.collection.find_one()
+    try:
+        print(cursor)
+    except Exception as e:
+        print(e)
+    
 def read_document_by_id(id, collection):
     """Fetch and print document by id."""
-    collection.find({"_id": id})
-
+    cursor = db.collection.find({"_id": id})
+    try:
+        for docs in cursor:
+            print(docs)
+    except Exception as e:
+        print(e)
+        
 def read_document_by_condition(field, value):
     """Fetch and print document by condition."""
-    collection.find({ field : value })
+    cursor=db.collection.find({ field : value })
+    try:
+        for docs in cursor:
+            print(docs)
+    except Exception as e:
+        print(e)
 
 def deleteOne( doc, collection):
     """Delete one document that matches the condition."""
-    collection.delete_one(doc)
+    cursor=db.collection.delete_one(doc)
+    try:
+        print(cursor)
+    except Exception as e:
+        print(e)
 
 def deleteMany( doc, collection):
     """Delete many document that matches the condition."""
-    collection.delete_many(doc)
+    cursor=db.collection.delete_many(doc)
+    try:
+        for docs in cursor:
+            print(docs)
+    except Exception as e:
+        print(e)
 
 def updateOne(doc, collection, toUpdate):
     """Updates one document that matches the condition."""
-    collection.update_one(doc, {"$set" : toUpdate})
+    cursor=db.collection.update_one(doc, {"$set" : toUpdate})
+    try:
+      print(cursor)
+    except Exception as e:
+        print(e)
 
 def updateMany(doc, collection, toUpdate):
     """Update many document that matches the condition."""
-    collection.update_many(doc, {"$set" : toUpdate})
-
+    cursor=db.collection.update_many(doc, {"$set" : toUpdate})
+    try:
+        for docs in cursor:
+            print(docs)
+    except Exception as e:
+        print(e)
+    
+def logicalOpe(collection, operator, conditions, field=None):
+    """Perfom logical quiries"""
+    for cond in conditions:
+        if not isinstance(cond, list):
+            raise TypeError("elements of the conditions need to be lists")
+        
+    if operator == "$not":
+        if field == None:
+            return "error if you chose the not operator you need the field"
+        else:
+            doc = {field: {conditions}}
+    else:
+        doc = {operator: conditions}
+    results = collection.find(doc)
+    
+    return results
+    
+def comparisonAndElemnt(doc, collection):
+    """Perform comparison and element quiries"""
+    collection.find(doc)
+    pass
 # -------------------------
 # Menu System
 # -------------------------
@@ -75,7 +141,9 @@ def menu():
         print("8. Update many documents")
         print("9. Deletes one document")
         print("10. Deletes many documents")
-        print("11. Exit")
+        print("11. Perform logical instructions")
+        print("12. Perform comparison and Element instructions")
+        print("13. Exit")
 
         choice = input("Enter choice: ")
 
@@ -140,12 +208,12 @@ def menu():
          #####THIS CONDITION CHECKS FOR READING ALL DOCUMENTS###########
 
         elif choice == "3":
-            read_all_documents()
+            read_all_documents(collection)
         
         #####THIS CONDITION CHECKS FOR READING FIRST DOCUMENTS###########
         
         elif choice == "4":
-            read_one_document()
+            read_one_document(collection)
             
         #####THIS CONDITION CHECKS FOR READING A DOCUMENT BY _ID###########
         elif choice == "5":
@@ -190,10 +258,34 @@ def menu():
             field = input("Enter field: ")
             value = input("Enter value: ")
             deleteMany({field : value} , collection)
-
+            
+        elif choice == "11":
+            #conditions, operator, field
+            operator = input("enter operator to compute($and, $or, and $not): ")
+            if operator == "$not":
+                field = input("enter field to compute on: ")
+            conditions = input("enter conditions (must be an array with lists as elements): ")
+            
+            doc = logicalOpe(collection, operator, conditions, field)
+            for docs in doc:
+                print(docs)
+            
+            
+        elif choice == "12":
+            field = input("enter field to compute on: ")
+            value = input("enter value to compute logic on: ")
+            operator = input("enter the main operator like ($gt, $lt, $in, and $exists): ")
+            
+            doc = {field: {operator: value}}
+            
+            comparisonAndElemnt(doc, collection)
+            
+            result = comparisonAndElemnt(doc, collection)
+            for resu in result:
+                print(resu)
 
     #####THIS CONDITION IS FOR EXITING###########
-        elif choice == "11":
+        elif choice == "13":
             print("Exiting...")
             quit()
 
