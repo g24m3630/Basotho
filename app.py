@@ -201,7 +201,14 @@ def menu():
         print("12. Perform comparison and Element instructions")
         print("13. Total Students in the Course")
         print("14. Top 10 Students in the Course")
-        print("15. Exit")
+        print("11. Perform not logical operations")
+        print("12. Perform and logical operations")
+        print("13. Perform or logical operations")
+        print("14. Perfrom greater than comparison operations")
+        print("15. Perform less than comparison operations")
+        print("16. Perform in element operations")
+        print("17. Perform exist element operations")
+        print("18. Exit")
 
         choice = input("Enter choice: ")
 
