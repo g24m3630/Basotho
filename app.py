@@ -105,52 +105,82 @@ def updateMany(doc, collection, toUpdate):
 
 """Logical, Comparison and Element nstrictions"""
 
+
 def notOperator(collection, condition, field):
     """Compute the not operator"""
     try:
-        db.collection.find({field: {"$not": condition}})
+        cursor = collection.find({field: {"$not": condition}})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def andOperator(collection, condition1, condition2):
     """Compute the and operator"""
     try:
-        db.collection.find({"$and": {[condition1, condition2]}})
+        cursor = collection.find({"$and": [condition1, condition2]})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def orOperator(collection, condition1, condition2):
     """Compute the or operator"""
     try:
-        db.collection.find({"$or": {[condition1, condition2]}})
+        cursor = collection.find({"$or": [condition1, condition2]})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def greaterThanOperator(collection, field, value):
     """Compute the greater than operator"""
     try:
-        db.collection.find({field: {"$gt": value}})
+        cursor = collection.find({field: {"$gt": value}})
+        docs = []
+        for doc in cursor:
+            
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def lessThanOperator(collection, field, value):
     """Compute the less than operator"""
     try:
-        db.collection.find({field: {"$lt": value}})
+        cursor = collection.find({field: {"$lt": value}})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def inOperator(collection, field, array):
     """Compute the in operator"""
     try:
-        db.collection.find({field: {"$in": array}})
+        cursor = collection.find({field: {"$in": array}})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 
 def existOperator(collection, field, bool):
     """compute the exist operator"""
     try:
-        db.collection.find({field: {"$exist": bool}})
+        cursor = collection.find({field: {"$exists": bool}})
+        docs = []
+        for doc in cursor:
+            docs.append(doc)
+        return docs
     except Exception as e:
         print(e)
 #__________________________________________________________________________________________________
@@ -243,7 +273,13 @@ def menu():
         print("14. Pull element")
         print("15. find documents using $all")
         print("16. find documents by size")
-
+        print("17. Perform not logical operations")
+        print("18. Perform and logical operations")
+        print("19. Perform or logical operations")
+        print("20. Perfrom greater than comparison operations")
+        print("21. Perform less than comparison operations")
+        print("22. Perform in element operations")
+        print("23. Perform exist element operations")
 
         
         print("24. Exit")
@@ -444,6 +480,69 @@ def menu():
             find_by_size(field,size, collection)
         ##################################################################### ################
 
+        elif choice == "17":
+            #field = input("enter field: ")
+            value = input("enter value: ")
+            
+            condition = {"$ne":value}
+            notOperator(collection, condition, field)
+            
+
+        elif choice == "18":
+            
+            field1 = input("enter first field: ")
+            value1 = input("enter the first value: ")
+           
+            condition1 = {field1: value1}
+
+            field2 = input("enter second field: ")
+            value2 = input("enter the value you want to change: ")
+            
+            condition2 = {field2: value2}
+    
+            andOperator(collection, condition1, condition2)
+            
+        
+        elif choice == "19":
+            field1 = input("enter first field: ")
+            value1 = input("enter the first value: ")
+            condition1 = {field1: value1}
+
+            field2 = input("enter second field: ")
+            value2 = input("enter the value you want to change: ")
+            condition2 = {field2: value2} 
+
+            orOperator(collection, condition1, condition2)
+
+        elif choice == "20":
+            field = input("enter field: ")
+            value = input("enter value: ")
+
+            greaterThanOperator(collection, field, value)
+
+        elif choice == "21":
+            field = input("enter field: ")
+            value = input("enter value: ")
+
+            lessThanOperator(collection, field, value)
+
+        elif choice == "22":
+            array = []
+            field = input("enter field: ")
+            numElements = int(input("enter number of elements to check in: "))
+            for _ in range(numElements):
+                element = input("enter each element: ")
+                array.append(element)
+            
+            result = inOperator(collection, field, array)
+            
+            print(result)
+
+        elif choice == "23":
+            field = input("enter field: ")
+            bool = input("enter boolean value True or False: ")
+
+            existOperator(collection, field, bool)
 
 
 
