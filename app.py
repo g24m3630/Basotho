@@ -5,7 +5,7 @@ import pprint
 # -------------------------
 # Database connection
 # -------------------------
-client = MongoClient("mongodb+srv://thabiso:BASOTHO@basotho.g73eyoe.mongodb.net/?retryWrites=true&w=majority&appName=BASOTHO")  # adjust if using Atlas
+client = MongoClient("mongodb+srv://group2:BASOTHO@basotho.g73eyoe.mongodb.net/?retryWrites=true&w=majority&appName=BASOTHO")  # adjust if using Atlas
 db = client["university_db"]      # replace with your chosen DB name
 collection = db["students"]    # example collection
 
@@ -26,17 +26,16 @@ def create_One_document(doc, collection):
 
 def create_Many_documents(doc, collection):
     """Insert a multiple document into the collection."""
-    cursor = collection.insert_many(doc)
     try:
-       print(cursor)
+        cursor = collection.insert_many(doc)
+        print(cursor)
     except Exception as e:
         print(e)
         
 def read_all_documents(collection):
     """Fetch and print all documents."""
-    
-    cursor = collection.find({})
     try:
+        cursor = collection.find({})
         for docs in cursor:
             print(docs)
     except Exception as e:
@@ -44,16 +43,16 @@ def read_all_documents(collection):
 
 def read_one_document(collection):
     """Fetch and print one documents."""
-    cursor=collection.find_one()
     try:
+        cursor=collection.find_one()
         print(cursor)
     except Exception as e:
         print(e)
     
 def read_document_by_id(id, collection):
     """Fetch and print document by id."""
-    cursor = collection.find({"_id": id})
     try:
+        cursor = collection.find({"_id": id})
         for docs in cursor:
             print(docs)
     except Exception as e:
@@ -61,8 +60,8 @@ def read_document_by_id(id, collection):
         
 def read_document_by_condition(field, value):
     """Fetch and print document by condition."""
-    cursor=collection.find({ field : value })
     try:
+        cursor=collection.find({ field : value })
         for docs in cursor:
             print(docs)
     except Exception as e:
@@ -70,16 +69,16 @@ def read_document_by_condition(field, value):
 
 def deleteOne( doc, collection):
     """Delete one document that matches the condition."""
-    cursor=collection.delete_one(doc)
     try:
+        cursor=collection.delete_one(doc)
         print(cursor)
     except Exception as e:
         print(e)
 
 def deleteMany( doc, collection):
     """Delete many document that matches the condition."""
-    cursor=collection.delete_many(doc)
     try:
+        cursor=collection.delete_many(doc)
         for docs in cursor:
             print(docs)
     except Exception as e:
@@ -87,43 +86,20 @@ def deleteMany( doc, collection):
 
 def updateOne(doc, collection, toUpdate):
     """Updates one document that matches the condition."""
-    cursor=collection.update_one(doc, {"$set" : toUpdate})
     try:
-      print(cursor)
+        cursor=collection.update_one(doc, {"$set" : toUpdate})
+        print(cursor)
     except Exception as e:
         print(e)
 
 def updateMany(doc, collection, toUpdate):
     """Update many document that matches the condition."""
-    cursor=collection.update_many(doc, {"$set" : toUpdate})
     try:
+        cursor=collection.update_many(doc, {"$set" : toUpdate})
         for docs in cursor:
             print(docs)
     except Exception as e:
         print(e)
-
-#__________________________________________________________________________________________________
-######Aggregation pipelines######
-
-def totalStudents_per_course(courseCode):
-    try:
-        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" }, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "enrolled_courses.course_code":1, "_id": 0 }},  {"$count" : "Total Students In The Course"}])
-        documents = []
-        for doc in cursor:
-            documents.append(doc)
-        print(documents)
-    except Exception as e:
-        print("Error occured!!")
-
-def top10Students_per_course(courseCode):
-    try:
-        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" },{"$sort": {"grade": 1, "name": 1}}, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "name": 1, "_id": 0 }},  {"$limit": 10} ])
-        documents = []
-        for doc in cursor:
-            documents.append(doc)
-        print(documents)
-    except Exception as e:
-        print("Error occured!!")
 
 #__________________________________________________________________________________________________
 
@@ -177,6 +153,70 @@ def existOperator(collection, field, bool):
         db.collection.find({field: {"$exist": bool}})
     except Exception as e:
         print(e)
+#__________________________________________________________________________________________________
+######Arrays######
+
+def Push(field,value,collection):
+    """Add a new item to an array."""
+    try:
+        cursor = collection.update_one({ "_id": 1 },{ "$push": { field: value } })
+        print(cursor)
+    except Exception as e:
+        print(e)
+
+def Pull(field,value,collection):
+    """Remove an item from an array."""
+    cursor = collection.update_one({ "_id": 1 },{ "$pull": { field: value } })
+    try:
+        cursor = collection.update_one({ "_id": 1 },{ "$pull": { field: value } })
+        print(cursor)
+    except Exception as e:
+        print(e)
+
+def find_all_in(array,collection):
+    """find documents based on contents."""
+    try:
+        cursor = collection.find({ "name": { "$all":array} } )
+        for nam in cursor:
+            print(nam)
+       
+    except Exception as e:
+        print(e)
+
+
+def find_by_size(field,size,collection):    
+    """find documents based on size."""
+    try:
+        cursor = db.students.find( { field: { "$size": size } } )
+        for doc in cursor:
+            print(doc)
+
+    except Exception as e:
+        print(e)
+
+#__________________________________________________________________________________________________
+######Aggregation pipelines######
+
+def totalStudents_per_course(courseCode):
+    try:
+        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" }, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "enrolled_courses.course_code":1, "_id": 0 }},  {"$count" : "Total Students In The Course"}])
+        documents = []
+        for doc in cursor:
+            documents.append(doc)
+        print(documents)
+    except Exception as e:
+        print("Error occured!!")
+
+def top10Students_per_course(courseCode):
+    try:
+        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" },{"$sort": {"grade": 1, "name": 1}}, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "name": 1, "_id": 0 }},  {"$limit": 10} ])
+        documents = []
+        for doc in cursor:
+            documents.append(doc)
+        print(documents)
+    except Exception as e:
+        print("Error occured!!")
+
 
 
 # -------------------------
@@ -197,18 +237,16 @@ def menu():
         print("8. Update many documents")
         print("9. Deletes one document")
         print("10. Deletes many documents")
-        print("11. Perform logical instructions")
-        print("12. Perform comparison and Element instructions")
-        print("13. Total Students in the Course")
-        print("14. Top 10 Students in the Course")
-        print("11. Perform not logical operations")
-        print("12. Perform and logical operations")
-        print("13. Perform or logical operations")
-        print("14. Perfrom greater than comparison operations")
-        print("15. Perform less than comparison operations")
-        print("16. Perform in element operations")
-        print("17. Perform exist element operations")
-        print("18. Exit")
+        print("11. Total Students in the Course")
+        print("12. Top 10 Students in the Course")
+        print("13. Push element")
+        print("14. Pull element")
+        print("15. find documents using $all")
+        print("16. find documents by size")
+
+
+        
+        print("24. Exit")
 
         choice = input("Enter choice: ")
 
@@ -323,136 +361,98 @@ def menu():
             field = input("Enter field: ")
             value = input("Enter value: ")
             deleteMany({field : value} , collection)
-            
-        elif choice == "11":
-            #conditions, operator, field
-            operator = input("enter operator to compute($and, $or, and $not): ")
-            if operator == "$not":
-                field = input("enter field to compute on: ")
-            conditions = input("enter conditions (must be an array with lists as elements): ")
-            
-            doc = logicalOpe(collection, operator, conditions, field)
-            for docs in doc:
-                print(docs)
-            
-            
-        elif choice == "12":
-            field = input("enter field to compute on: ")
-            value = input("enter value to compute logic on: ")
-            operator = input("enter the main operator like ($gt, $lt, $in, and $exists): ")
-            
-            doc = {field: {operator: value}}
-            
-            comparisonAndElemnt(doc, collection)
-            
-            result = comparisonAndElemnt(doc, collection)
-            for resu in result:
-                print(resu)
-
+   ######################################################################################################################         
+    
 #####Here prints out the total number of students in the course by course code###########
-        elif choice == "13":
+        elif choice == "11":
             name = input("Enter course_code(e.g. EOW379): ")
             totalStudents_per_course(name)
 
     #####Here prints out the top 10 students in the course by course code###########
-        elif choice == "14":
+        elif choice == "12":
             name = input("Enter course_code(e.g. EOW379): ")
             top10Students_per_course(name)
-
-        elif choice == "11":
-            field = input("enter field: ")
-            value = input("enter value: ")
-            subOperator = input("enter sub operator between less(<) and greater(>) than: ")
-
-            if subOperator == "<":
-                condition = {"$lt": value}
-            else:
-                condition = {"$gt": value}
-
-            return notOperator(collection, condition, field)
-            
-
-        elif choice == "12":
-            
-            field1 = input("enter first field: ")
-            value1 = input("enter the first value: ")
-            operator1 = input("enter the operator of your choice (greater than(>), less than(<)): ")
-            if operator1 == ">":
-                condition1 = {field1: {"$gt": value1}}
-            elif operator1 == "<":
-                condition1 = {field1: {"$lt": value1}}
-            else:
-                condition1 = {field1: value1}
-
-            field2 = input("enter second field: ")
-            value2 = input("enter the value you want to change: ")
-            operator2 = input("enter the operator of your choice (greater than(>), less than(<)): ")
-            if operator2 == ">":
-                condition2 = {field2: {"$gt": value2}}
-            elif operator2 == "<":
-                condition2 = {field2: {"$lt": value2}}
-            else:
-                condition2 = {field2: value2}
-
-
-            return andOperator(collection, condition1, condition2)
-            
-        
+##############################################################################################################################            
+   ##### ARRAYS QUERIES ###########
+          """Push elements to an array"""
         elif choice == "13":
-            field1 = input("enter first field: ")
-            value1 = input("enter the first value: ")
-            operator1 = input("enter the operator of your choice (greater than(>), less than(<)): ")
-            if operator1 == ">":
-                condition1 = {field1: {"$gt": value1}}
-            elif operator1 == "<":
-                condition1 = {field1: {"$lt": value1}}
-            else:
-                condition1 = {field1: value1}
+            field = input("Enter field (advisors) or (enrolled_courses): ")
+            if field == "advisors":
+                num_advisors=int(input("Enter number of advisors: "))
+                advisors=[]
+                for n in range(num_advisors):
+                    advisor_id=input("Enter id of advisor: ")
+                    advisors.append(advisor_id)   
+                Push( "advisors",advisors, collection)
+        elif field == "enrolled_courses":
+            courses = []
+            course_num = int(input("Enter the number of courses you do: "))
+            for i in range(course_num):
+                course_id =  ObjectId()
+                course_code = input("Enter course_code: ")
+                semester = input("Enter the semester: ")
+                grade = input("Enter your grade: ")
+                status = input("Enter the status(Complete OR Enrolled): ")
+                courses.append({"course_id ": course_id, "course_code": course_code, "semester":semester, "grade":grade, "status":status})
+            Push( "enrolled_courses",courses, collection)    
 
-            field2 = input("enter second field: ")
-            value2 = input("enter the value you want to change: ")
-            operator2 = input("enter the operator of your choice (greater than(>), less than(<)): ")
-            if operator2 == ">":
-                condition2 = {field2: {"$gt": value2}}
-            elif operator2 == "<":
-                condition2 = {field2: {"$lt": value2}}
-            else:
-                condition2 = {field2: value2}
+         
 
-            returnorOperator(collection, condition1, condition2)
-
+          
+            """Pull elements to an array"""
         elif choice == "14":
-            field = input("enter field: ")
-            value = input("enter value: ")
+            field = input("Enter field (advisors) or (enrolled_courses): ")
+            if field == "advisors":
+                num_advisors=int(input("Enter number of advisors: "))
+                advisors=[]
+                for n in range(num_advisors):
+                    advisor_id=input("Enter id of advisor: ")
+                    advisors.append(advisor_id)   
+                Pull( "advisors",advisors, collection)
+        elif field == "enrolled_courses":
+            courses = []
+            course_num = int(input("Enter the number of courses you do: "))
+            for i in range(course_num):
+                course_id =  ObjectId()
+                course_code = input("Enter course_code: ")
+                semester = input("Enter the semester: ")
+                grade = input("Enter your grade: ")
+                status = input("Enter the status(Complete OR Enrolled): ")
+                courses.append({"course_id ": course_id, "course_code": course_code, "semester":semester, "grade":grade, "status":status})
+            Pull( "enrolled_courses",courses, collection)
 
-            greaterThanOperator(collection, field, value)
 
+            """find documents using all operator"""
         elif choice == "15":
-            field = input("enter field: ")
-            value = input("enter value: ")
+            courses = []
+            course_num = int(input("Enter the number of names to search: "))
+            if course_num ==1:
+                 name = input("Enter name: ")
+                 find_all_in( [name], collection)
+            else:  
+                for i in range(course_num):
+                    name = input("Enter name: ")
+                    courses.append(name)
+                for nam in courses:
+                    find_all_in( [nam], collection)  
 
-            lessThanOperator(collection, field, value)
 
+            """find documents by size"""
         elif choice == "16":
-            array = []
-            field = input("enter field: ")
-            numElements = int(input("enter number of elements to check in: "))
-            for _ in range(numElements):
-                element = input("enter each element: ")
-                array.append(element)
-            
-            result = inOperator(collection, field, array)
-            for results in result:
-                print(results)
+            field = input("Enter field (advisors) or (enrolled_courses): ")
+            size = int(input("Enter size: "))
+            find_by_size(field,size, collection)
+        ##################################################################### ################
 
-        elif choice == "17":
-            field = input("enter field: ")
-            bool = input("enter boolean value True or False: ")
 
-            existOperator(collection, field, bool)
+
+
+
+
+        
 
     #####THIS CONDITION IS FOR EXITING###########
-        elif choice == "18":
+        elif choice == "24":
             print("Exiting...")
             quit()
 
