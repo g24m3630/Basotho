@@ -19,14 +19,14 @@ pp = pprint.PrettyPrinter(indent=2)
 def create_One_document(doc, collection):
     """Insert a single document into the collection."""
     try:
-        cursor = db.collection.insert_one(doc)
+        cursor = collection.insert_one(doc)
         print(cursor)
     except Exception as e:
         print(e)
 
 def create_Many_documents(doc, collection):
     """Insert a multiple document into the collection."""
-    cursor = db.collection.insert_many(doc)
+    cursor = collection.insert_many(doc)
     try:
        print(cursor)
     except Exception as e:
@@ -35,7 +35,7 @@ def create_Many_documents(doc, collection):
 def read_all_documents(collection):
     """Fetch and print all documents."""
     
-    cursor = db.collection.find({})
+    cursor = collection.find({})
     try:
         for docs in cursor:
             print(docs)
@@ -44,7 +44,7 @@ def read_all_documents(collection):
 
 def read_one_document(collection):
     """Fetch and print one documents."""
-    cursor=db.collection.find_one()
+    cursor=collection.find_one()
     try:
         print(cursor)
     except Exception as e:
@@ -52,7 +52,7 @@ def read_one_document(collection):
     
 def read_document_by_id(id, collection):
     """Fetch and print document by id."""
-    cursor = db.collection.find({"_id": id})
+    cursor = collection.find({"_id": id})
     try:
         for docs in cursor:
             print(docs)
@@ -61,7 +61,7 @@ def read_document_by_id(id, collection):
         
 def read_document_by_condition(field, value):
     """Fetch and print document by condition."""
-    cursor=db.collection.find({ field : value })
+    cursor=collection.find({ field : value })
     try:
         for docs in cursor:
             print(docs)
@@ -70,7 +70,7 @@ def read_document_by_condition(field, value):
 
 def deleteOne( doc, collection):
     """Delete one document that matches the condition."""
-    cursor=db.collection.delete_one(doc)
+    cursor=collection.delete_one(doc)
     try:
         print(cursor)
     except Exception as e:
@@ -78,7 +78,7 @@ def deleteOne( doc, collection):
 
 def deleteMany( doc, collection):
     """Delete many document that matches the condition."""
-    cursor=db.collection.delete_many(doc)
+    cursor=collection.delete_many(doc)
     try:
         for docs in cursor:
             print(docs)
@@ -87,7 +87,7 @@ def deleteMany( doc, collection):
 
 def updateOne(doc, collection, toUpdate):
     """Updates one document that matches the condition."""
-    cursor=db.collection.update_one(doc, {"$set" : toUpdate})
+    cursor=collection.update_one(doc, {"$set" : toUpdate})
     try:
       print(cursor)
     except Exception as e:
@@ -95,34 +95,14 @@ def updateOne(doc, collection, toUpdate):
 
 def updateMany(doc, collection, toUpdate):
     """Update many document that matches the condition."""
-    cursor=db.collection.update_many(doc, {"$set" : toUpdate})
+    cursor=collection.update_many(doc, {"$set" : toUpdate})
     try:
         for docs in cursor:
             print(docs)
     except Exception as e:
         print(e)
     
-def logicalOpe(collection, operator, conditions, field=None):
-    """Perfom logical quiries"""
-    for cond in conditions:
-        if not isinstance(cond, list):
-            raise TypeError("elements of the conditions need to be lists")
-        
-    if operator == "$not":
-        if field == None:
-            return "error if you chose the not operator you need the field"
-        else:
-            doc = {field: {conditions}}
-    else:
-        doc = {operator: conditions}
-    results = collection.find(doc)
-    
-    return results
-    
-def comparisonAndElemnt(doc, collection):
-    """Perform comparison and element quiries"""
-    collection.find(doc)
-    pass
+
 # -------------------------
 # Menu System
 # -------------------------
