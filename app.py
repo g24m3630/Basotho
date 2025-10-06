@@ -101,7 +101,32 @@ def updateMany(doc, collection, toUpdate):
             print(docs)
     except Exception as e:
         print(e)
-    
+
+#__________________________________________________________________________________________________
+######Aggregation pipelines######
+
+def totalStudents_per_course(courseCode):
+    try:
+        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" }, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "enrolled_courses.course_code":1, "_id": 0 }},  {"$count" : "Total Students In The Course"}])
+        documents = []
+        for doc in cursor:
+            documents.append(doc)
+        print(documents)
+    except Exception as e:
+        print("Error occured!!")
+
+def top10Students_per_course(courseCode):
+    try:
+        cursor = collection.aggregate( [{ "$unwind": "$enrolled_courses" },{"$sort": {"grade": 1, "name": 1}}, { "$match": { "enrolled_courses.course_code" : courseCode}}  , { "$project": { "name": 1, "_id": 0 }},  {"$limit": 10} ])
+        documents = []
+        for doc in cursor:
+            documents.append(doc)
+        print(documents)
+    except Exception as e:
+        print("Error occured!!")
+
+#__________________________________________________________________________________________________
+
 
 # -------------------------
 # Menu System
@@ -123,7 +148,9 @@ def menu():
         print("10. Deletes many documents")
         print("11. Perform logical instructions")
         print("12. Perform comparison and Element instructions")
-        print("13. Exit")
+        print("13. Total Students in the Course")
+        print("14. Top 10 Students in the Course")
+        print("15. Exit")
 
         choice = input("Enter choice: ")
 
@@ -264,8 +291,18 @@ def menu():
             for resu in result:
                 print(resu)
 
-    #####THIS CONDITION IS FOR EXITING###########
+#####Here prints out the total number of students in the course by course code###########
         elif choice == "13":
+            name = input("Enter course_code(e.g. EOW379): ")
+            totalStudents_per_course(name)
+
+    #####Here prints out the top 10 students in the course by course code###########
+        elif choice == "14":
+            name = input("Enter course_code(e.g. EOW379): ")
+            top10Students_per_course(name)
+        
+    #####THIS CONDITION IS FOR EXITING###########
+        elif choice == "15":
             print("Exiting...")
             quit()
 
