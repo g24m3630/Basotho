@@ -35,7 +35,7 @@ The application handles highly structured MongoDB documents with embedded object
       "grade": "75",
       "status": "Enrolled"
     }
-
+```
 ## Prerequisites
 Before running the application, ensure you have the following installed:
 
@@ -49,9 +49,9 @@ Clone or copy the project files to your local workspace directory.
 Install Required Dependencies:
 Install the official MongoDB driver for Python (pymongo) using pip:
 
-Bash
+```Bash
 pip install pymongo
-
+```
 ## Configure Database Connection:
 Open the Python script and locate the Database Connection setup block. Replace the default connection URI string with your actual cluster connection string:
 
@@ -61,9 +61,9 @@ client = MongoClient("your-mongodb-atlas-connection-string-here")
 How To Run
 Execute the main script via your terminal:
 
-Bash
+```Bash
 python your_script_name.py
-
+```
 ## Error Handling
 All processing routines inside the script are decoupled using dedicated try-except blocks. If database connection drops, syntax verification fails, or an incorrect ObjectId formatting mismatch happens, the program prints the captured runtime error to the console without crashing the running interface wrapper.
   ],
